@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  # Run JS-based actions on Node 24 (Node 20 runtime removed 2026-09-16)
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  verify:
+    name: Lint, Typecheck & Build
+    runs-on: ubuntu-latest
+
+    env:
+      DATABASE_URL: postgresql://dardania:dardania@localhost:5432/dardania?schema=public
+      DIRECT_URL: postgresql://dardania:dardania@localhost:5432/dardania?schema=public
+      AUTH_SECRET: ci-dummy-secret-not-used-in-production-0000
+      AUTH_URL: http://localhost:3000
+      AUTH_TRUST_HOST: "true"
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: dardania
+          POSTGRES_PASSWORD: dardania
+          POSTGRES_DB: dardania
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U dardania -d dardania"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma Client
+        run: pnpm prisma generate
+
+      - name: Apply database migrations
+        run: pnpm prisma migrate deploy
+
+      - name: Lint
+        run: pnpm run lint
+
+      - name: Typecheck
+        run: pnpm run typecheck
+
+      - name: Build
+        run: pnpm run build

@@ -1,0 +1,55 @@
+"use client"
+
+import { useTheme } from "next-themes"
+import { Toaster as Sonner, type ToasterProps } from "sonner"
+import {
+  CheckCircle as CircleCheckIcon,
+  Info as InfoIcon,
+  Warning as TriangleAlertIcon,
+  XCircle as OctagonXIcon,
+  CircleNotch as Loader2Icon,
+} from "@phosphor-icons/react/ssr"
+
+const Toaster = ({ ...props }: ToasterProps) => {
+  const { theme = "system" } = useTheme()
+
+  return (
+    <Sonner
+      theme={theme as ToasterProps["theme"]}
+      className="toaster group"
+      icons={{
+        success: (
+          <CircleCheckIcon weight="duotone" className="size-4" />
+        ),
+        info: (
+          <InfoIcon weight="duotone" className="size-4" />
+        ),
+        warning: (
+          <TriangleAlertIcon weight="duotone" className="size-4" />
+        ),
+        error: (
+          <OctagonXIcon weight="duotone" className="size-4" />
+        ),
+        loading: (
+          <Loader2Icon weight="bold" className="size-4 animate-spin" />
+        ),
+      }}
+      style={
+        {
+          "--normal-bg": "var(--popover)",
+          "--normal-text": "var(--popover-foreground)",
+          "--normal-border": "var(--border)",
+          "--border-radius": "var(--radius)",
+        } as React.CSSProperties
+      }
+      toastOptions={{
+        classNames: {
+          toast: "cn-toast",
+        },
+      }}
+      {...props}
+    />
+  )
+}
+
+export { Toaster }

@@ -1,0 +1,209 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum OrderStatus {
+  PENDING
+  DISPATCHED
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentMode {
+  COD
+  CARD
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+  FAILED
+  REFUNDED
+}
+
+model User {
+  id               String          @id @default(cuid())
+  name             String
+  email            String          @unique
+  phone            String?
+  passwordHash     String
+  isVerified       Boolean         @default(true)
+  isAdmin          Boolean         @default(false)
+  stripeCustomerId String?         @unique
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  addresses        Address[]
+  orders           Order[]
+  cartItems        CartItem[]
+  wishlistItems    WishlistItem[]
+  reviews          Review[]
+  paymentMethods   PaymentMethod[]
+}
+
+model Category {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  slug      String    @unique
+  createdAt DateTime  @default(now())
+  products  Product[]
+}
+
+model Brand {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  createdAt DateTime  @default(now())
+  products  Product[]
+}
+
+model Product {
+  id                 String         @id @default(cuid())
+  title              String
+  titleEn            String?
+  slug               String         @unique
+  description        String
+  descriptionEn      String?
+  price              Float
+  discountPercentage Float          @default(0)
+  stockQuantity      Int            @default(0)
+  thumbnail          String
+  images             String[]
+  rating             Float          @default(0)
+  isDeleted          Boolean        @default(false)
+  isFeatured         Boolean        @default(false)
+  categoryId         String
+  brandId            String
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  category           Category       @relation(fields: [categoryId], references: [id])
+  brand              Brand          @relation(fields: [brandId], references: [id])
+  cartItems          CartItem[]
+  wishlistItems      WishlistItem[]
+  reviews            Review[]
+  orderItems         OrderItem[]
+
+  @@index([categoryId])
+  @@index([brandId])
+  @@index([isDeleted])
+  @@index([isFeatured])
+  @@index([createdAt])
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@index([userId])
+}
+
+model WishlistItem {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  note      String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@index([userId])
+}
+
+/// `isDefault` is enforced one-per-user by a Postgres *partial* unique
+/// index — `CREATE UNIQUE INDEX ON "Address" ("userId") WHERE "isDefault"`
+/// — which Prisma's schema DSL cannot express. The index lives in
+/// migration `20260524235307_profile_polish/migration.sql`; treat that file
+/// as the source of truth for the constraint. See ADR 0003.
+model Address {
+  id         String   @id @default(cuid())
+  userId     String
+  fullName   String
+  street     String
+  city       String
+  postalCode String
+  type       String   @default("Home")
+  isDefault  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Order {
+  id              String        @id @default(cuid())
+  userId          String
+  total           Float
+  status          OrderStatus   @default(PENDING)
+  paymentMode     PaymentMode   @default(COD)
+  paymentStatus   PaymentStatus @default(UNPAID)
+  paymentIntentId String?       @unique
+  addressJson     Json
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items           OrderItem[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  productId String
+  title     String
+  thumbnail String
+  price     Float
+  quantity  Int
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@index([orderId])
+}
+
+/// `isDefault` is enforced one-per-user by a Postgres *partial* unique
+/// index — `CREATE UNIQUE INDEX ON "PaymentMethod" ("userId") WHERE "isDefault"`
+/// — same pattern as `Address.isDefault`. See migration
+/// `20260526010000_saved_payment_methods/migration.sql` for the source of truth.
+model PaymentMethod {
+  id                    String   @id @default(cuid())
+  userId                String
+  stripePaymentMethodId String   @unique
+  brand                 String
+  last4                 String
+  expMonth              Int
+  expYear               Int
+  isDefault             Boolean  @default(false)
+  createdAt             DateTime @default(now())
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  rating    Int
+  comment   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@index([productId])
+}

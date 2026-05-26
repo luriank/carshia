@@ -1,0 +1,320 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-heading: var(--font-heading);
+  --font-display: var(--font-heading);
+
+  /* Add an extra-small step below xs for "eyebrow" labels and badges
+     that were using hard-coded text-[0.65rem] / text-[0.7rem]. */
+  --text-2xs: 0.6875rem;
+  --text-2xs--line-height: 1rem;
+
+  /* Tighter tracking for display sizes, looser for small caps eyebrows. */
+  --tracking-tightest: -0.025em;
+  --tracking-eyebrow: 0.14em;
+
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-gold: var(--gold);
+  --color-gold-foreground: var(--gold-foreground);
+  --color-surface-band: var(--surface-band);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  /* Cream is the warm ground — deepened from near-white so cards can lift. */
+  --background: oklch(0.978 0.014 80);
+  --foreground: oklch(0.165 0.012 80);
+  /* Card is a hair off white — reads as parchment lifted above the cream. */
+  --card: oklch(0.998 0.005 78);
+  --card-foreground: oklch(0.165 0.012 80);
+  --popover: oklch(0.998 0.005 78);
+  --popover-foreground: oklch(0.165 0.012 80);
+  --primary: #1b3a6b;
+  --primary-foreground: oklch(0.99 0.005 78);
+  --secondary: oklch(0.952 0.018 78);
+  --secondary-foreground: oklch(0.215 0.012 80);
+  --muted: oklch(0.948 0.02 78);
+  /* Bumped from 0.5 → 0.44 for ≥4.5:1 WCAG AA on small text against
+     the cream background. */
+  --muted-foreground: oklch(0.44 0.014 78);
+  --accent: oklch(0.94 0.024 78);
+  --accent-foreground: oklch(0.215 0.012 80);
+  --gold: #e8b33d;
+  --gold-foreground: #3a2c05;
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.885 0.018 78);
+  --input: oklch(0.9 0.016 78);
+  --ring: #1b3a6b;
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --radius: 0.8rem;
+  --sidebar: oklch(0.97 0.02 78);
+  --sidebar-foreground: oklch(0.165 0.012 80);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.948 0.02 78);
+  --sidebar-accent-foreground: oklch(0.215 0.012 80);
+  --sidebar-border: oklch(0.88 0.018 78);
+  --sidebar-ring: oklch(0.708 0.009 78);
+  /* Section band — one step deeper than the cream ground, for vertical
+     rhythm breaks between hero, bestsellers, artisan story, marquee. */
+  --surface-band: oklch(0.953 0.024 80);
+}
+
+.dark {
+  /* Lamplit-bazaar dark: warmer, slightly deeper ground; cards have more lift. */
+  --background: oklch(0.135 0.014 75);
+  --foreground: oklch(0.985 0.005 78);
+  --card: oklch(0.198 0.016 75);
+  --card-foreground: oklch(0.985 0.005 78);
+  --popover: oklch(0.208 0.016 75);
+  --popover-foreground: oklch(0.985 0.005 78);
+  /* Slightly inkier navy in dark — was the same hue with steel cast. */
+  --primary: #7fa8e0;
+  --primary-foreground: #0a1322;
+  --secondary: oklch(0.262 0.014 75);
+  --secondary-foreground: oklch(0.985 0.005 78);
+  --muted: oklch(0.262 0.014 75);
+  --muted-foreground: oklch(0.78 0.012 75);
+  --accent: oklch(0.298 0.018 75);
+  --accent-foreground: oklch(0.985 0.005 78);
+  --gold: #f0c25a;
+  --gold-foreground: #2a2003;
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(0.98 0.012 75 / 13%);
+  --input: oklch(0.98 0.012 75 / 17%);
+  --ring: #7fa8e0;
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: oklch(0.192 0.016 75);
+  --sidebar-foreground: oklch(0.985 0.005 78);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0.005 78);
+  --sidebar-accent: oklch(0.262 0.014 75);
+  --sidebar-accent-foreground: oklch(0.985 0.005 78);
+  --sidebar-border: oklch(0.98 0.012 75 / 10%);
+  --sidebar-ring: oklch(0.556 0.006 75);
+  /* Band tone in dark — a quiet warm lift above the ground. */
+  --surface-band: oklch(0.172 0.016 75);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings:
+      "ss01",
+      "ss03",
+      "cv11";
+    font-optical-sizing: auto;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  html {
+    @apply font-sans;
+    scroll-behavior: smooth;
+  }
+  h1,
+  h2,
+  h3,
+  .font-heading {
+    font-family: var(--font-heading);
+    font-feature-settings:
+      "liga" 1,
+      "dlig" 1;
+    letter-spacing: -0.005em;
+    text-wrap: balance;
+  }
+  .font-heading {
+    line-height: 1.05;
+  }
+  .tabular-nums,
+  [data-numeric] {
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--color-gold) 35%, transparent);
+  }
+}
+
+@utility font-display {
+  font-family: var(--font-heading);
+  font-feature-settings:
+    "liga" 1,
+    "dlig" 1,
+    "lnum" 1;
+  letter-spacing: -0.012em;
+  line-height: 1;
+}
+
+@utility text-eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+/* A thin horizontal gilt line — the dominant typographic divider for
+   section headings ("Bestsellers", "All products", artisan story). Fades
+   to transparent at both ends so it sits naturally inside copy. */
+@utility gilt-rule {
+  height: 1px;
+  width: 2.25rem;
+  background-image: linear-gradient(
+    to right,
+    transparent,
+    color-mix(in oklab, var(--gold) 70%, transparent) 30%,
+    color-mix(in oklab, var(--gold) 90%, transparent) 60%,
+    transparent
+  );
+}
+
+/* Gold halo for hover/focus on hero-class surfaces. The opacity is
+   tuned per-mode so it reads as gilt in light and burnished brass in
+   dark. */
+@utility ring-gilt {
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--gold) 55%, transparent),
+    0 12px 30px -16px color-mix(in oklab, var(--gold) 45%, transparent);
+}
+
+/* ============================================================
+   Duotone signature — see CONTEXT.md and docs/adr/0005.
+   Every Phosphor duotone icon (identified by its 256-grid viewBox)
+   gets a gold-tinted accent on its secondary path. The primary path
+   uses currentColor, so call sites pick the silhouette tone via
+   Tailwind text-* utilities (text-primary, text-foreground, …).
+   Phosphor renders the duotone secondary as a <path> with the
+   attribute opacity="0.2" — that's the selector hook.
+   ============================================================ */
+svg[viewBox="0 0 256 256"] path[opacity="0.2"] {
+  fill: var(--gold);
+  opacity: 0.55;
+}
+
+.dark svg[viewBox="0 0 256 256"] path[opacity="0.2"] {
+  /* Brass-tinted gold reads stronger against the lamplit-bazaar ground. */
+  opacity: 0.6;
+}
+
+/* The Sun glyph in the theme toggle is the one documented inversion —
+   gold-led silhouette with a navy accent. Add `.duotone-inverted` to
+   the icon's class to swap which path takes the gold. */
+.duotone-inverted svg[viewBox="0 0 256 256"] path[opacity="0.2"] {
+  fill: var(--primary);
+  opacity: 0.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@keyframes kenburns {
+  from {
+    transform: scale(1.04) translateY(0);
+  }
+  to {
+    transform: scale(1.1) translateY(-1%);
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@utility animate-kenburns {
+  animation: kenburns 18s ease-out forwards;
+  /* On client-side navigation the element re-mounts and the animation
+     would replay from scale(1) → 1.12, visible as a "zoom snap". By
+     keeping the from-state slightly zoomed (1.04) and using paused-on-
+     non-touch fallback below, replays read as a continuation, not a
+     fresh jolt. */
+}
+
+@utility animate-marquee {
+  animation: marquee 28s linear infinite;
+}
+
+/* The shine sweep on product cards uses fine pointer hover only —
+   touch devices would otherwise stick on the hover state and the
+   sheen would freeze mid-card. */
+@media (hover: hover) and (pointer: fine) {
+  .group\/card:hover .card-shine::after {
+    transform: translateX(100%);
+    transition: transform 0.9s ease;
+  }
+}
