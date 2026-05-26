@@ -22,7 +22,7 @@ import type { PopularCategory } from "@/app/api/search/popular/route";
 
 const DEBOUNCE_MS = 180;
 const MIN_QUERY = 2;
-const RECENT_KEY = "dardania:recent-searches:v1";
+const RECENT_KEY = "carshia:recent-searches:v1";
 const RECENT_MAX = 6;
 
 function loadRecent(): string[] {

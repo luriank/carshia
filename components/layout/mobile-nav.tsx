@@ -14,6 +14,7 @@ import {
   User as UserIcon,
 } from "@phosphor-icons/react/ssr";
 import { useTranslations } from "next-intl";
+import { brand } from "@/brand.config";
 import { signOutAction } from "@/lib/actions/auth";
 import { SearchBar } from "@/components/layout/search-bar";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
@@ -115,7 +116,7 @@ export function MobileNav({
       </SheetTrigger>
       <SheetContent side="left" className="flex w-72 flex-col gap-0">
         <SheetHeader>
-          <SheetTitle>Autentika Gjakovë</SheetTitle>
+          <SheetTitle>{brand.fullName}</SheetTitle>
         </SheetHeader>
         <div className="flex flex-1 flex-col gap-1 overflow-y-auto p-4">
           {user ? (

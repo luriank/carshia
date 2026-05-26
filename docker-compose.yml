@@ -1,15 +1,15 @@
 services:
   db:
     image: postgres:16-alpine
-    container_name: dardania-db
+    container_name: carshia-db
     restart: unless-stopped
     environment:
-      POSTGRES_USER: dardania
-      POSTGRES_PASSWORD: dardania
-      POSTGRES_DB: dardania
+      POSTGRES_USER: carshia
+      POSTGRES_PASSWORD: carshia
+      POSTGRES_DB: carshia
     ports:
       - "5433:5432"
     volumes:
-      - dardania-pgdata:/var/lib/postgresql/data
+      - carshia-pgdata:/var/lib/postgresql/data
 volumes:
-  dardania-pgdata:
+  carshia-pgdata:
